@@ -24,6 +24,7 @@ $('#message-form').on('submit', function (e) {
         from: 'user', 
         text: $('[name=message]').val()
     }, function(){
+        $('[name=message]').val('')
     })
 })
 
@@ -33,7 +34,9 @@ locationButton.on('click', function(){
     if(!navigator.geolocation){
         return alert('browser does not support geolocation')
     }
+    locationButton.attr('disable','disable').text('sending location...')
     navigator.geolocation.getCurrentPosition(function (location) {
+        locationButton.removeAttr('disable').text('Send Location')
         socket.emit('createLocationMessage', {
             lat: location.coords.latitude,
             long: location.coords.longitude 
