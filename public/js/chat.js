@@ -33,16 +33,17 @@ socket.on('connect', function() {
 var leaveRoom = $('#leave-room')
 
 leaveRoom.on('click', function(){
-    var params = jQuery.deparam(window.location.search)
-    console.log(params)
-    socket.emit('leaveRoom', params, function(err) {
-        if(err){
-            alert('cannot leave room')
-        }
-        else{
-            window.location.href = '/'
-        }
+    socket.emit('leaveRoom', function(err) {
+
     })
+})
+
+socket.on('updateUsersList', function(users){ 
+    var ol = $('<ol></ol>')
+    users.forEach(function (user) {
+        ol.append($('<li></li>').text(user))
+    })
+    $('#users').html(ol)
 })
 
 socket.on('disconnect', function() {
@@ -75,15 +76,14 @@ $('#message-form').on('submit', function (e) {
     e.preventDefault()
 
     socket.emit('createMessage', {
-        from: 'user', 
         text: $('[name=message]').val()
     }, function(){
         $('[name=message]').val('')
     })
 })
 
-var locationButton = $('#send-location')
 
+var locationButton = $('#send-location')
 locationButton.on('click', function(){
     if(!navigator.geolocation){
         return alert('browser does not support geolocation')
